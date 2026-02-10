@@ -4,7 +4,7 @@ var Product = require('../models/product'); // const products = [];
 
 
 exports.getAddProduct = function (req, res, next) {
-  res.render('add-product', {
+  res.render('admin/add-product', {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     activeAddProduct: true,
@@ -23,7 +23,7 @@ exports.postAddProduct = function (req, res, next) {
 exports.getProducts = function (req, res, next) {
   //   const products = adminData.products;
   Product.fetchAll(function (products) {
-    res.render('shop', {
+    res.render('shop/product-list', {
       prods: products,
       pageTitle: 'Shop',
       path: "/",

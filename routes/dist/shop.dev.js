@@ -1,12 +1,12 @@
 "use strict";
 
-// const path = require('path');
-var express = require('express'); // const rootDir = require('../util/path');
-// const adminData = require('./admin');
+var express = require('express');
 
-
-var productsController = require('../controllers/products');
+var shopController = require('../controllers/shop');
 
 var router = express.Router();
-router.get('/', productsController.getProducts);
+router.get('/', shopController.getProducts);
+router.get('/products');
+router.get('/cart');
+router.get('/checkout');
 module.exports = router;
