@@ -1,25 +1,28 @@
-// const mysql = require("mysql2");
+const mongodb = require("mongodb");
+const MongoClient = mongodb.MongoClient;
 
-// const pool = mysql.createPool({
-//     host: process.env.DB_HOST,
-//     user: process.env.DB_USER,
-//     database: process.env.DB_NAME,
-//     password: process.env.DB_PASSWORD,
-// });
+let _db;
 
-// module.exports = pool.promise();
+const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 
-const Sequelize = require("sequelize");
-require("dotenv").config();
+const mongoConnect = (callback) => {
+    MongoClient.connect(uri)
+        .then((client) => {
+            _db = client.db();
+            callback();
+        })
+        .catch((err) => {
+            console.log(err);
+            throw err;
+        });
+};
 
-const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
-        dialect: "mysql",
-        host: process.env.DB_HOST,
-    },
-);
+const getDb = () => {
+    if (_db) {
+        return _db;
+    }
+    throw "No db found";
+};
 
-module.exports = sequelize;
+exports.mongoConnect = mongoConnect;
+exports.getDb = getDb;
