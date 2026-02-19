@@ -1,6 +1,16 @@
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+const sendgridTransport = require("nodemailer-sendgrid-transport");
 
 const User = require("../models/user");
+
+const transporter = nodemailer.createTransport(
+    sendgridTransport({
+        auth: {
+            api_key: process.env.API_KEY,
+        },
+    }),
+);
 
 exports.getLogin = (req, res, next) => {
     let message = req.flash("error");
@@ -52,7 +62,7 @@ exports.postLogin = (req, res, next) => {
                             res.redirect("/");
                         });
                     }
-                    req.flash("password", "Invalid email or password.");
+                    req.flash("error", "Invalid email or password.");
                     res.redirect("/login");
                 })
                 .catch((err) => {
@@ -66,8 +76,8 @@ exports.postLogin = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
-    const confirmPassword = req.body.confirmPassword;
-    User.findOne({ email: email })
+
+    User.findOne({ email })
         .then((userDoc) => {
             if (userDoc) {
                 req.flash(
@@ -81,13 +91,26 @@ exports.postSignup = (req, res, next) => {
                 .hash(password, 12)
                 .then((hashedPassword) => {
                     const user = new User({
-                        email: email,
+                        email,
                         password: hashedPassword,
                         cart: { items: [] },
                     });
                     return user.save();
                 })
-                .then((result) => {
+                .then(() => {
+                    return transporter.sendMail({
+                        to: email,
+                        from: "serjjiniuss@gmail.com",
+                        subject: "Signup succeeded!",
+                        html: "<h1>You successfully signed up!</h1>",
+                    });
+                })
+                .then((info) => {
+                    console.log("SendGrid sendMail OK:", info);
+                    res.redirect("/login");
+                })
+                .catch((err) => {
+                    console.log("SendGrid sendMail ERROR:", err);
                     res.redirect("/login");
                 });
         })
