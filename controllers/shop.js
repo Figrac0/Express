@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 const PDFDocument = require("pdfkit");
 
@@ -124,6 +125,87 @@ exports.postCartDeleteProduct = (req, res, next) => {
         .removeFromCart(prodId)
         .then((result) => {
             res.redirect("/cart");
+        })
+        .catch((err) => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+};
+
+exports.getCheckout = (req, res, next) => {
+    let products;
+    let total = 0;
+
+    req.user
+        .populate("cart.items.productId")
+        .then((user) => {
+            products = user.cart.items;
+
+            total = products.reduce(
+                (acc, p) => acc + p.quantity * p.productId.price,
+                0,
+            );
+
+            return stripe.checkout.sessions.create({
+                mode: "payment",
+                payment_method_types: ["card"],
+                line_items: products.map((p) => ({
+                    quantity: p.quantity,
+                    price_data: {
+                        currency: "usd",
+                        unit_amount: Math.round(
+                            Number(p.productId.price) * 100,
+                        ),
+                        product_data: {
+                            name: p.productId.title,
+                            description: p.productId.description,
+                        },
+                    },
+                })),
+                success_url: `${req.protocol}://${req.get("host")}/checkout/success`,
+                cancel_url: `${req.protocol}://${req.get("host")}/checkout/cancel`,
+            });
+        })
+        .then((session) => {
+            res.render("shop/checkout", {
+                path: "/checkout",
+                pageTitle: "Checkout",
+                products,
+                totalSum: total,
+                sessionId: session.id,
+                stripePublicKey: process.env.STRIPE_PUBLIC_KEY,
+            });
+        })
+        .catch((err) => next(err));
+};
+
+exports.getCheckoutSuccess = (req, res, next) => {
+    req.user
+        .populate("cart.items.productId")
+        .then((user) => {
+            const products = user.cart.items.map((i) => {
+                return {
+                    quantity: i.quantity,
+                    product: { ...i.productId._doc },
+                };
+            });
+
+            const order = new Order({
+                user: {
+                    email: req.user.email,
+                    userId: req.user._id,
+                },
+                products: products,
+            });
+
+            return order.save();
+        })
+        .then(() => {
+            return req.user.clearCart();
+        })
+        .then(() => {
+            res.redirect("/orders");
         })
         .catch((err) => {
             const error = new Error(err);
