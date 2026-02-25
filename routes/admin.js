@@ -15,10 +15,25 @@ router.post(
     isAuth,
     [
         body("title").isString().isLength({ min: 3 }).trim(),
-        body("price").isFloat(),
-        body("description").isLength({ min: 5, max: 400 }).trim(),
+        body("price")
+            .customSanitizer((v) => String(v).replace(",", "."))
+            .isFloat(),
+        body("description").isLength({ min: 5, max: 3000 }).trim(),
     ],
     adminController.postAddProduct,
+);
+
+router.post(
+    "/edit-product",
+    isAuth,
+    [
+        body("title").isString().isLength({ min: 3 }).trim(),
+        body("price")
+            .customSanitizer((v) => String(v).replace(",", "."))
+            .isFloat(),
+        body("description").isLength({ min: 5, max: 3000 }).trim(),
+    ],
+    adminController.postEditProduct,
 );
 
 router.get("/edit-product/:productId", isAuth, adminController.getEditProduct);

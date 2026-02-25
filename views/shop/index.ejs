@@ -1,38 +1,60 @@
+<!-- views/shop/index.ejs -->
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/product.css">
+<link rel="stylesheet" href="/css/product.css">
 </head>
 
 <body>
     <%- include('../includes/navigation.ejs') %>
 
     <main>
+        <section class="page-hero">
+            <div>
+                <h1>Shop</h1>
+                <p>Find your perfect product.</p>
+            </div>
+        </section>
+
         <% if (prods.length > 0) { %>
             <div class="grid">
                 <% for (let product of prods) { %>
                     <article class="card product-item">
+                        <div class="card__image">
+                            <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
+                        </div>
+
                         <header class="card__header">
                             <h1 class="product__title"><%= product.title %></h1>
+                            <div class="product-meta">
+                                <span class="badge"><span class="badge__dot"></span> In stock</span>
+                                <span class="product__price">$<%= product.price %></span>
+                            </div>
                         </header>
-                        <div class="card__image">
-                            <img src="/<%= product.imageUrl %>"
-                                alt="<%= product.title %>">
-                        </div>
+
                         <div class="card__content">
-                            <h2 class="product__price">$<%= product.price %></h2>
                             <p class="product__description"><%= product.description %></p>
                         </div>
+
                         <div class="card__actions">
-                            <a href="/products/<%= product._id %>" class="btn">Details</a>
+                            <a href="/products/<%= product._id %>" class="btn secondary">Details</a>
                             <% if (isAuthenticated) { %>
                                 <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                            <% } else { %>
+                                <a class="btn" href="/login">Login to buy</a>
                             <% } %>
                         </div>
                     </article>
                 <% } %>
             </div>
+
             <%- include('../includes/pagination.ejs', {currentPage: currentPage, nextPage: nextPage, previousPage: previousPage, lastPage: lastPage, hasNextPage: hasNextPage, hasPreviousPage: hasPreviousPage}) %>
         <% } else { %>
-            <h1>No Products Found!</h1>
+            <section class="page-hero">
+                <div>
+                    <h1>No products found</h1>
+                    <p>Try again later</p>
+                </div>
+            </section>
         <% } %>
     </main>
-<%- include('../includes/end.ejs') %>
+
+    <%- include('../includes/end.ejs') %>

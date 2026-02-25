@@ -30,11 +30,21 @@
                     value="<% if (editing || hasError) { %><%= product.imageUrl %><% } %>">
             </div> -->
             <div class="form-control">
-                <label for="image">Image</label>
-                <input 
-                    type="file" 
-                    name="image" 
-                    id="image" >
+            <label class="form-label" for="image">Image</label>
+
+            <div class="file-field" data-file-field>
+                <input class="file-input" type="file" name="image" id="image" accept="image/png,image/jpg,image/jpeg">
+
+                <label class="file-button" for="image">
+                <span class="file-button__icon" aria-hidden="true"></span>
+                <span class="file-button__text">Choose image</span>
+                </label>
+
+                <div class="file-meta" aria-live="polite">
+                <span class="file-name" data-file-name>No file selected</span>
+                <span class="file-hint">PNG, JPG up to your server limit</span>
+                </div>
+            </div>
             </div>
             <div class="form-control">
                 <label for="price">Price</label>

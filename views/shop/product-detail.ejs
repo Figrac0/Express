@@ -1,18 +1,40 @@
+<!-- views/shop/product-detail.ejs -->
 <%- include('../includes/head.ejs') %>
-    </head>
+<link rel="stylesheet" href="/css/product.css">
+</head>
 
-    <body>
-        <%- include('../includes/navigation.ejs') %>
-        <main class="centered">
-            <h1><%= product.title %></h1>
-            <hr>
-            <div class="image">
-                <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
+<body>
+    <%- include('../includes/navigation.ejs') %>
+
+    <main>
+        <section class="page-hero">
+            <div>
+                <h1><%= product.title %></h1>
+                <p>Product details and premium presentation</p>
             </div>
-            <h2><%= product.price %></h2>
-            <p><%= product.description %></p>
-            <% if (isAuthenticated) { %>
-                <%- include('../includes/add-to-cart.ejs', {product: product}) %>
-            <% } %>
-        </main>
-        <%- include('../includes/end.ejs') %>
+            <div class="badge">
+                <span class="badge__dot"></span>
+                <span>$<%= product.price %></span>
+            </div>
+        </section>
+
+        <div class="image">
+            <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
+        </div>
+
+        <section class="card" style="max-width: 860px; margin: 0 auto;">
+            <div class="card__content" style="padding: 16px;">
+                <p class="product-description"><%= product.description %></p>
+            </div>
+            <div class="card__actions" style="justify-content: center;">
+                <a href="/products" class="btn secondary">Back</a>
+                <% if (isAuthenticated) { %>
+                    <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                <% } else { %>
+                    <a class="btn" href="/login">Login to buy</a>
+                <% } %>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../includes/end.ejs') %>

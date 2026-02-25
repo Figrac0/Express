@@ -1,9 +1,18 @@
+<!-- views/500.ejs -->
 <%- include('includes/head.ejs') %>
 </head>
 
 <body>
     <%- include('includes/navigation.ejs') %>
-    <h1>Some error occurred!</h1>
-    <p>We're working on fixing this, sorry for the inconvenience!</p>
 
-<%- include('includes/end.ejs') %>
+    <main>
+        <section class="page-hero">
+            <div>
+                <h1>500</h1>
+                <p>Something went wrong. Please try again.</p>
+            </div>
+            <a class="btn" href="/">Go home</a>
+        </section>
+    </main>
+
+    <%- include('includes/end.ejs') %>

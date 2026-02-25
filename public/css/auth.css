@@ -1,6 +1,34 @@
+/* public/css/auth.css */
+/* Auth pages – centered premium card */
+
 .login-form {
-  width: 20rem;
-  max-width: 90%;
-  margin: auto;
-  display: block;
+    width: 420px;
+    max-width: 92%;
+    margin: 0 auto;
+    display: block;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow-soft);
+}
+
+[data-theme="light"] .login-form {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.auth-links {
+    margin-top: 14px;
+    text-align: center;
+}
+
+.auth-links a {
+    color: var(--muted);
+    font-size: 13px;
+    border-bottom: 1px dashed rgba(124, 92, 255, 0.35);
+}
+
+.auth-links a:hover {
+    color: var(--text);
+    border-bottom-color: rgba(124, 92, 255, 0.6);
 }

@@ -1,8 +1,18 @@
+<!-- views/404.ejs -->
 <%- include('includes/head.ejs') %>
 </head>
 
 <body>
     <%- include('includes/navigation.ejs') %>
-    <h1>Page Not Found!</h1>
 
-<%- include('includes/end.ejs') %>
+    <main>
+        <section class="page-hero">
+            <div>
+                <h1>404</h1>
+                <p>Page not found</p>
+            </div>
+            <a class="btn" href="/">Go home</a>
+        </section>
+    </main>
+
+    <%- include('includes/end.ejs') %>

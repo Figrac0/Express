@@ -1,22 +1,37 @@
+<!-- views/auth/reset.ejs -->
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/forms.css">
-    <link rel="stylesheet" href="/css/auth.css">
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/auth.css">
 </head>
 
 <body>
-   <%- include('../includes/navigation.ejs') %>
+    <%- include('../includes/navigation.ejs') %>
 
     <main>
+        <section class="page-hero">
+            <div>
+                <h1>Reset Password</h1>
+                <p>We will send a secure reset link to your email</p>
+            </div>
+        </section>
+
         <% if (errorMessage) { %>
             <div class="user-message user-message--error"><%= errorMessage %></div>
         <% } %>
+
         <form class="login-form" action="/reset" method="POST">
             <div class="form-control">
                 <label for="email">E-Mail</label>
-                <input type="email" name="email" id="email">
+                <input type="email" name="email" id="email" autocomplete="email">
             </div>
+
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button class="btn" type="submit">Reset Password</button>
+
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+                <button class="btn" type="submit">Send reset link</button>
+                <a class="btn secondary" href="/login">Back to login</a>
+            </div>
         </form>
     </main>
-<%- include('../includes/end.ejs') %>
+
+    <%- include('../includes/end.ejs') %>
